@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SurveX Email Automator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Prata', serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url('https://img.icons8.com/clouds/500/new-post.png') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+    }
+    .container {
+      position: relative;
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      width: 450px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      color: white;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    h2 {
+      font-family: 'Prata', serif;
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #03f45b;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+    p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .chat-box {
+      flex: 1;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.25);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .msg {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 15px;
+      line-height: 1.4;
+      word-wrap: break-word;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    .user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      border-bottom-right-radius: 3px;
+    }
+    .bot {
+      align-self: flex-start;
+      background: rgba(0, 0, 0, 0.986);
+      border-bottom-left-radius: 3px;
+      color: #e6e6e6;
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+    textarea {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      resize: none;
+      font-family: 'Prata', serif;
+      font-size: 15px;
+    }
+    button {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      border: none;
+      padding: 0 18px;
+      border-radius: 12px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #03f45b, #03f45b);
+      transform: scale(1.05);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>SurveX Email Automator 🤖</h2>
+    <p>Chat with the AI — it will send emails and answer related queries.</p>
+
+    <div class="chat-box" id="chatBox">
+      <div class="msg bot">👋 Hi! I’m your Email Automator. Type a request to begin.</div>
+    </div>
+
+    <div class="input-area">
+      <textarea id="userInput" rows="2" placeholder="Type your request..."></textarea>
+      <button onclick="sendRequest()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chatBox");
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.className = "msg " + sender;
+      msg.innerText = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight; // auto-scroll
+    }
+
+    async function sendRequest() {
+      const inputField = document.getElementById("userInput");
+      const input = inputField.value.trim();
+      if (!input) return;
+
+      addMessage(input, "user");
+      inputField.value = "";
+
+      try {
+        const res = await fetch("https://suryaxn8n.app.n8n.cloud/webhook-test/76ce54b9-f91e-49b1-a50d-7ebb4fe36e56", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ request: input })
+        });
+
+        const data = await res.json();
+        addMessage(data.reply || "✅ Request processed successfully!", "bot");
+      } catch (err) {
+        addMessage("❌ Error: " + err.message, "bot");
+      }
+    }
+  </script>
+</body>
+</html>
