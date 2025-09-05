@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -149,14 +149,19 @@
       inputField.value = "";
 
       try {
-        const res = await fetch("https://suryaxn8n.app.n8n.cloud/webhook-test/76ce54b9-f91e-49b1-a50d-7ebb4fe36e56", {
+        const res = await fetch("https://suryaxn8n.app.n8n.cloud/webhook/76ce54b9-f91e-49b1-a50d-7ebb4fe36e56", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ request: input })
         });
 
         const data = await res.json();
-        addMessage(data.reply || "✅ Request processed successfully!", "bot");
+
+        if (data.reply) {
+          addMessage(data.reply, "bot");
+        } else {
+          addMessage("✅ Request sent! Waiting for AI response...", "bot");
+        }
       } catch (err) {
         addMessage("❌ Error: " + err.message, "bot");
       }
