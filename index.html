@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -29,7 +29,7 @@
       padding: 25px;
       border-radius: 20px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-      width: 450px;
+      width: 500px;
       height: 80vh;
       display: flex;
       flex-direction: column;
@@ -85,14 +85,19 @@
       display: flex;
       gap: 10px;
     }
-    textarea {
-      flex: 1;
+    input[type="email"], textarea {
       padding: 12px;
       border: none;
       border-radius: 12px;
-      resize: none;
       font-family: 'Prata', serif;
       font-size: 15px;
+    }
+    input[type="email"] {
+      flex: 1;
+    }
+    textarea {
+      flex: 2;
+      resize: none;
     }
     button {
       background: linear-gradient(135deg, #4CAF50, #45a049);
@@ -124,6 +129,7 @@
     </div>
 
     <div class="input-area">
+      <input type="email" id="emailInput" placeholder="Recipient Email (leave blank for test)">
       <textarea id="userInput" rows="2" placeholder="Type your request..."></textarea>
       <button onclick="sendRequest()">Send</button>
     </div>
@@ -142,8 +148,12 @@
 
     async function sendRequest() {
       const inputField = document.getElementById("userInput");
+      const emailField = document.getElementById("emailInput");
       const input = inputField.value.trim();
       if (!input) return;
+
+      // Use dynamic email if provided, else fixed email for testing
+      const toEmail = emailField.value.trim() || "fixed@example.com";
 
       addMessage(input, "user");
       inputField.value = "";
@@ -152,7 +162,10 @@
         const res = await fetch("https://suryaxn8n.app.n8n.cloud/webhook/76ce54b9-f91e-49b1-a50d-7ebb4fe36e56", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ request: input })
+          body: JSON.stringify({ 
+            request: input,
+            to: toEmail // send the email dynamically
+          })
         });
 
         const data = await res.json();
